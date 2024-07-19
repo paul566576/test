@@ -12,5 +12,4 @@ public class SecuredBankingAppApplication
 	{
 		SpringApplication.run(SecuredBankingAppApplication.class, args);
 	}
-
 }
