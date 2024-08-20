@@ -27,8 +27,8 @@ public class CustomerController
 
 		try
 		{
-			final String hashPwd = passwordEncoder.encode(customer.getPwd());
-			customer.setPwd(hashPwd);
+			final String hashPwd = passwordEncoder.encode(customer.getPassword());
+			customer.setPassword(hashPwd);
 			final Customer savedCustomer =  customerRepository.save(customer);
 
 			if (savedCustomer.getId() > 0) {

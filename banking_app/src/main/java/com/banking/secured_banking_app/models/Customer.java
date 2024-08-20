@@ -1,11 +1,17 @@
 package com.banking.secured_banking_app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.Date;
 
 
 @Entity
-@Table(name="customers")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,12 +20,18 @@ public class Customer
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "customer_id")
 	private long id;
-	@NonNull
+	@Column(name = "name")
+	private String name;
+	@Column(name = "email")
 	private String email;
-	@NonNull
-	private String pwd;
-	@Column(name="role")
-	@NonNull
+	@Column(name = "pwd")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String password;
+	@Column(name = "role")
 	private String role;
+	@Column(name = "create_at")
+	@JsonIgnore
+	private Date createAt;
 }
