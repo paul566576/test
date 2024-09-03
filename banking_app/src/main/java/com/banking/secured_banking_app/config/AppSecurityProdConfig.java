@@ -25,7 +25,7 @@ public class AppSecurityProdConfig
 				.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
 				.csrf(csrfConfig -> csrfConfig.disable())
 				.authorizeHttpRequests((requests) -> {
-					requests.requestMatchers("/myAccount", "/myBalance", "/myCards", "myLoans").authenticated()
+					requests.requestMatchers("/myAccount", "/myBalance", "/myCards", "/myLoans", "/user").authenticated()
 							.requestMatchers("/notices", "/contacts", "/register", "/error", "/invalidSession").permitAll();
 				});
 		http.formLogin(Customizer.withDefaults() );

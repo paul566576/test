@@ -19,7 +19,7 @@ public class Contact
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "contact_id")
-	private long contactId;
+	private String contactId;
 	@Column(name = "contact_name")
 	private String contactName;
 	@Column(name = "contact_email")
