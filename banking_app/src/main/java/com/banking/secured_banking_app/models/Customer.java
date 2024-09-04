@@ -29,6 +29,8 @@ public class Customer
 	@Column(name = "pwd")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
+	@Column(name = "mobile_number")
+	private String mobileNumber;
 	@Column(name = "role")
 	private String role;
 	@Column(name = "create_at")

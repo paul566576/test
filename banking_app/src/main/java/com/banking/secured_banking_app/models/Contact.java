@@ -14,10 +14,10 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "contact_messages")
 public class Contact
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "contact_id")
 	private String contactId;
 	@Column(name = "contact_name")
@@ -28,7 +28,7 @@ public class Contact
 	private String subject;
 	@Column(name = "message")
 	private String message;
-	@Column(name = "create-at")
+	@Column(name = "create_dt")
 	private Date createAt;
 
 }

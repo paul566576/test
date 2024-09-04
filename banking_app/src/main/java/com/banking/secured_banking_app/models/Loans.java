@@ -22,8 +22,8 @@ public class Loans
 	private long loanNumber;
 	@Column(name="customer_id")
 	private long customerId;
-	@Column(name = "start_at")
-	private Date startAt;
+	@Column(name = "start_dt")
+	private Date startDt;
 	@Column(name = "loan_type")
 	private String loanType;
 	@Column(name="total_loan")
