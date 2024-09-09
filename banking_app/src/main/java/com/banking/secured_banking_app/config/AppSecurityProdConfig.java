@@ -2,7 +2,10 @@ package com.banking.secured_banking_app.config;
 
 import com.banking.secured_banking_app.exceptionhandlers.CustomAccessDeniedHandler;
 import com.banking.secured_banking_app.exceptionhandlers.CustomBasicAuthenticationEntryPoint;
+import com.banking.secured_banking_app.filter.AuthoritiesLoggingAfterFilter;
+import com.banking.secured_banking_app.filter.AuthoritiesLoggingAtFilter;
 import com.banking.secured_banking_app.filter.CsrfCookieFilter;
+import com.banking.secured_banking_app.filter.RequestValidationBeforeFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +33,7 @@ import java.util.Collections;
 public class AppSecurityProdConfig
 {
 	@Bean
-	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception
+	SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http) throws Exception
 	{
 		final CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
 		http.cors(corsConfig -> corsConfig.configurationSource(new CorsConfigurationSource()
@@ -39,7 +42,7 @@ public class AppSecurityProdConfig
 					public CorsConfiguration getCorsConfiguration(HttpServletRequest request)
 					{
 						final CorsConfiguration config = new CorsConfiguration();
-						config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+						config.setAllowedOrigins(Collections.singletonList("https://localhost:4200"));
 						config.setAllowedMethods(Collections.singletonList("*"));
 						config.setAllowedHeaders(Collections.singletonList("*"));
 						config.setAllowCredentials(true);
@@ -49,15 +52,21 @@ public class AppSecurityProdConfig
 				}))
 				.securityContext(context -> context.requireExplicitSave(false))
 				.sessionManagement(sessionCofig -> sessionCofig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
- 				.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
+				.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
 				.csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
 						.ignoringRequestMatchers("/contacts", "/register")
 						.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 				.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-				.authorizeHttpRequests((requests) -> {
-					requests.requestMatchers("/myAccount", "/myBalance", "/myCards", "/myLoans", "/user").authenticated()
-							.requestMatchers("/notices", "/contacts", "/register", "/error", "/invalidSession").permitAll();
-				});
+				.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+				.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+				.addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
+				.authorizeHttpRequests((requests) -> requests
+						.requestMatchers("/myAccount").hasRole("USER")
+						.requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
+						.requestMatchers("/myCards").hasRole("USER")
+						.requestMatchers("/myLoans").hasRole("USER")
+						.requestMatchers("/user").authenticated()
+						.requestMatchers("/notices", "/contacts", "/register", "/error", "/invalidSession").permitAll());
 		http.formLogin(Customizer.withDefaults());
 		http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
 		//		http.exceptionHandling(ehc -> ehc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));

@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @SpringBootApplication
 @EnableJpaRepositories
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecuredBankingAppApplication
 {
 
