@@ -3,9 +3,9 @@ package com.banking.secured_banking_app.filter;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +21,7 @@ public class RequestValidationBeforeFilter implements Filter
 		final HttpServletRequest req = (HttpServletRequest) request;
 		final HttpServletResponse res = (HttpServletResponse) response;
 		String header = req.getHeader(HttpHeaders.AUTHORIZATION);
-		if (null != header)
+		if (StringUtils.isNotBlank(header))
 		{
 			header = header.trim();
 			if (StringUtils.startsWithIgnoreCase(header, "Basic "))

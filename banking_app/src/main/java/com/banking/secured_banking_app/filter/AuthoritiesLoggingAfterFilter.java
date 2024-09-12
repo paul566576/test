@@ -17,7 +17,7 @@ public class AuthoritiesLoggingAfterFilter implements Filter
 	{
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (null != authentication)
-		{
+ 		{
 			log.info("Authorities logged in : {}",
 					authentication.getName() + "is si=uccessfully authenticated and has authorities " + authentication.getAuthorities()
 							.toString());
