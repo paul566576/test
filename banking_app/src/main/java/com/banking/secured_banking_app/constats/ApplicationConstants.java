@@ -1,4 +1,4 @@
-package com.banking.secured_banking_app.controller;
+package com.banking.secured_banking_app.constats;
 
 public final  class ApplicationConstants
 {

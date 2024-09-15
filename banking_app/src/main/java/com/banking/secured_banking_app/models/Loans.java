@@ -32,7 +32,7 @@ public class Loans
 	private int amountPaid;
 	@Column(name = "outstanding_amount")
 	private int outstandingAmount;
-	@Column(name = "create_at")
+	@Column(name = "create_dt")
 	private Date createAt;
 
 }

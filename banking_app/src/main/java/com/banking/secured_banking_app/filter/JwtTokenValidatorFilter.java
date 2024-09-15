@@ -1,6 +1,6 @@
 package com.banking.secured_banking_app.filter;
 
-import com.banking.secured_banking_app.controller.ApplicationConstants;
+import com.banking.secured_banking_app.constats.ApplicationConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

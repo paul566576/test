@@ -66,7 +66,7 @@ public class AppSecurityConfig
 				.authorizeHttpRequests((requests) -> requests
 						.requestMatchers("/myAccount").hasRole("USER")
 						.requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
-						.requestMatchers("/myCards").hasRole("USER")
+						.requestMatchers("/myCards").authenticated()
 						.requestMatchers("/myLoans").hasRole("USER")
 						.requestMatchers("/user").authenticated()
 						.requestMatchers("/notices", "/contacts", "/register", "/error", "/invalidSession", "/apiLogin").permitAll());

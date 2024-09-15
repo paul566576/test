@@ -64,7 +64,7 @@ public class AppSecurityProdConfig
 						.requestMatchers("/myAccount").hasRole("USER")
 						.requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
 						.requestMatchers("/myCards").hasRole("USER")
-						.requestMatchers("/myLoans").hasRole("USER")
+						.requestMatchers("/myLoans").authenticated()
 						.requestMatchers("/user").authenticated()
 						.requestMatchers("/notices", "/contacts", "/register", "/error", "/invalidSession", "/apiLogin").permitAll());
 		http.formLogin(Customizer.withDefaults());

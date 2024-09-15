@@ -1,5 +1,6 @@
 package com.banking.secured_banking_app.controller;
 
+import com.banking.secured_banking_app.constats.ApplicationConstants;
 import com.banking.secured_banking_app.dto.LoginRequestDTO;
 import com.banking.secured_banking_app.dto.LoginResponseDTO;
 import com.banking.secured_banking_app.models.Customer;
