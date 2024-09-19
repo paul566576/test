@@ -25,12 +25,12 @@ import java.util.Collections;
 public class AppSecurityProdConfig
 {
 
-	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-uri}")
-	private String introspectionUri;
-	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-id}")
-	private String clientId;
-	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-secret}")
-	private String clientSecret;
+//	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-uri}")
+//	private String introspectionUri;
+//	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-id}")
+//	private String clientId;
+//	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-secret}")
+//	private String clientSecret;
 
 	@Bean
 	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception
@@ -67,11 +67,11 @@ public class AppSecurityProdConfig
 						.requestMatchers("/myLoans").hasRole("USER")
 						.requestMatchers("/user").authenticated()
 						.requestMatchers("/notices", "/contacts", "/register", "/error").permitAll());
-		//		http.oauth2ResourceServer(
-		//				rsc -> rsc.jwt(jwtConfigurre -> jwtConfigurre.jwtAuthenticationConverter(jwtAuthenticationConverter)));
-		http.oauth2ResourceServer(rsc -> rsc.opaqueToken(
-				otc -> otc.authenticationConverter(new KeycloakOpaqueRoleConverter()).introspectionUri(introspectionUri)
-						.introspectionClientCredentials(clientId, clientSecret)));
+				http.oauth2ResourceServer(
+						rsc -> rsc.jwt(jwtConfigurre -> jwtConfigurre.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+//		http.oauth2ResourceServer(rsc -> rsc.opaqueToken(
+//				otc -> otc.authenticationConverter(new KeycloakOpaqueRoleConverter()).introspectionUri(introspectionUri)
+//						.introspectionClientCredentials(clientId, clientSecret)));
 		http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
 		return http.build();
 	}
