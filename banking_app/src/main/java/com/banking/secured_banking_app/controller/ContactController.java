@@ -1,6 +1,7 @@
 package com.banking.secured_banking_app.controller;
 
 import com.banking.secured_banking_app.models.Contact;
+import com.banking.secured_banking_app.models.Customer;
 import com.banking.secured_banking_app.repositories.ContactRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreFilter;
@@ -8,10 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 @RestController

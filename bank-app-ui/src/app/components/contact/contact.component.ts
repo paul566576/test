@@ -30,7 +30,7 @@ export class ContactComponent implements OnInit {
             this.model = contact;
         }.bind(this));
         contactForm.resetForm();
-      });
+      }); 
 
   }
 
