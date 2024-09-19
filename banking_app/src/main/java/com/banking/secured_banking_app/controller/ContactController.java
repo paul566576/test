@@ -20,7 +20,7 @@ public class ContactController
 
 	@PostMapping("/contacts")
 	@PreFilter("filterObject.contactName != 'Test'")
-	public List<Contact> saveContactInquiryDetails(@RequestBody List<Contact> contacts)
+	public List<Contact> saveContactInquiryDetails(final @RequestBody List<Contact> contacts)
 	{
 		final List<Contact> returnContacts = new ArrayList<>();
 		if (!contacts.isEmpty())

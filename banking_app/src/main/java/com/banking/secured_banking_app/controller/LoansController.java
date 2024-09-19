@@ -26,7 +26,6 @@ public class LoansController
 	@GetMapping("/myLoans")
 	public List<Loans> getLoanDetails(final @RequestParam String email)
 	{
-
 		final Optional<Customer> optionalCustomer = customerRepository.findByEmail(email);
 
 		if (optionalCustomer.isPresent())

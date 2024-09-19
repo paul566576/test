@@ -3,6 +3,7 @@ package com.banking.secured_banking_app.config;
 import com.banking.secured_banking_app.exceptionhandlers.CustomAccessDeniedHandler;
 import com.banking.secured_banking_app.filter.CsrfCookieFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -23,8 +24,15 @@ import java.util.Collections;
 @Profile("!prod")
 public class AppSecurityConfig
 {
+	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-uri}")
+	private String introspectionUri;
+	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-id}")
+	private String clientId;
+	@Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-secret}")
+	private String clientSecret;
+
 	@Bean
-	public  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception
+	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception
 	{
 		final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
 		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
@@ -58,8 +66,11 @@ public class AppSecurityConfig
 						.requestMatchers("/myLoans").hasRole("USER")
 						.requestMatchers("/user").authenticated()
 						.requestMatchers("/notices", "/contacts", "/register", "/error").permitAll());
-		http.oauth2ResourceServer(
-				rsc -> rsc.jwt(jwtConfigurre -> jwtConfigurre.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+		//		http.oauth2ResourceServer(
+		//				rsc -> rsc.jwt(jwtConfigurre -> jwtConfigurre.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+		http.oauth2ResourceServer(rsc -> rsc.opaqueToken(
+				otc -> otc.authenticationConverter(new KeycloakOpaqueRoleConverter()).introspectionUri(introspectionUri)
+						.introspectionClientCredentials(clientId, clientSecret)));
 		http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
 		return http.build();
 	}
