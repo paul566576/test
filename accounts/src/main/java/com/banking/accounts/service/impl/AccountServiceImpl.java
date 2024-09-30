@@ -53,7 +53,7 @@ public class AccountServiceImpl implements AccountService
 
 	/**
 	 * Creates new banking account for given Customer.
-	 * @param customer
+	 * @param customer Customer
 	 * @return Accounts
 	 */
 

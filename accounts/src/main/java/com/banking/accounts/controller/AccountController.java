@@ -1,7 +1,6 @@
 package com.banking.accounts.controller;
 
 import com.banking.accounts.constants.AccountConstants;
-import com.banking.accounts.dto.AccountsDto;
 import com.banking.accounts.dto.CustomerDto;
 import com.banking.accounts.dto.ResponseDto;
 import com.banking.accounts.service.AccountService;
