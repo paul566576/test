@@ -4,7 +4,7 @@ import com.banking.accounts.dto.AccountsDto;
 import com.banking.accounts.entity.Accounts;
 
 
-public class AccountMapper
+public class AccountsMapper
 {
 	public static AccountsDto mapToAccountsDto(final Accounts source, final AccountsDto target) {
 		target.setAccountNumber(source.getAccountNumber());

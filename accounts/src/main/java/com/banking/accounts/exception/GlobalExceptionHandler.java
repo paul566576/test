@@ -14,12 +14,26 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler
 {
 	@ExceptionHandler(value = { CustomerAlreadyExistsException.class })
-	public ResponseEntity<ErrorResponseDto> handleException(final CustomerAlreadyExistsException exception,
+	public ResponseEntity<ErrorResponseDto> handleCustomerAlreadyExistsException(final CustomerAlreadyExistsException exception,
 			final WebRequest request)
 	{
 		final ErrorResponseDto errorResponseDto = new ErrorResponseDto(
 				request.getDescription(false),
 				HttpStatus.BAD_REQUEST,
+				exception.getMessage(),
+				LocalDateTime.now()
+		);
+
+		return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = { ResourceNotFoundException.class })
+	public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(final ResourceNotFoundException exception,
+			final WebRequest request)
+	{
+		final ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+				request.getDescription(false),
+				HttpStatus.NOT_FOUND,
 				exception.getMessage(),
 				LocalDateTime.now()
 		);
