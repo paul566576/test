@@ -1,6 +1,7 @@
 package com.banking.accounts.controller;
 
 import com.banking.accounts.constants.AccountConstants;
+import com.banking.accounts.dto.AccountsDto;
 import com.banking.accounts.dto.CustomerDto;
 import com.banking.accounts.dto.ResponseDto;
 import com.banking.accounts.service.AccountService;
@@ -33,5 +34,26 @@ public class AccountController
 	{
 		final CustomerDto customerDto = accountService.getCustomerByMobileNumber(mobileNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(customerDto);
+	}
+
+	@PutMapping("/update")
+	public ResponseEntity<ResponseDto> updateAccount(final @RequestBody CustomerDto customerDto)
+	{
+		if (accountService.updateAccount(customerDto))
+		{
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseDto(AccountConstants.MESSAGE_200, AccountConstants.STATUS_200));
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(new ResponseDto(AccountConstants.MESSAGE_417_UPDATE, AccountConstants.MESSAGE_417_UPDATE));
+	}
+
+	@DeleteMapping("/delete")
+	public ResponseEntity<ResponseDto> deleteAccount(final @RequestParam String mobileNumber) {
+		if (accountService.deleteAccount(mobileNumber)) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(AccountConstants.MESSAGE_200, AccountConstants.STATUS_200));
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(new ResponseDto(AccountConstants.STATUS_417, AccountConstants.MESSAGE_417_DELETE));
 	}
 }

@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Random;
 
 
@@ -72,10 +71,6 @@ public class AccountServiceImpl implements AccountService
 		return newAccount;
 	}
 
-	/**
-	 * @param mobileNumber
-	 * @return Account details based on mobile number
-	 */
 	@Override
 	public CustomerDto getCustomerByMobileNumber(final String mobileNumber)
 	{
@@ -90,4 +85,58 @@ public class AccountServiceImpl implements AccountService
 
 		return customerDto;
 	}
+
+	@Override
+	public boolean updateAccount(final CustomerDto customerDto)
+	{
+		boolean updated = false;
+		final AccountsDto accountsDto = customerDto.getAccountsDto();
+		if (accountsDto.getAccountNumber() != null)
+		{
+			Accounts accounts = accountsRepository.findById(accountsDto.getAccountNumber()).orElseThrow(
+					() -> new ResourceNotFoundException("Account", "AccountNumber", accountsDto.getAccountNumber().toString()));
+
+
+			AccountsMapper.mapToAccounts(accountsDto, accounts);
+			accounts = accountsRepository.save(accounts);
+
+			final Long customerId = accounts.getCustomerId();
+			final Customer customer = customerRepository.findById(customerId).orElseThrow(
+					() -> new ResourceNotFoundException("Customer", "customerId", customerId.toString()));
+			CustomerMapper.mapToCustomer(customerDto, customer);
+			customerRepository.save(customer);
+			updated = true;
+
+			if (log.isDebugEnabled())
+			{
+				log.trace("Account with account nuumber {} has been successfully updated", accounts.getAccountNumber());
+			}
+		}
+		return updated;
+	}
+
+	@Override
+	public boolean deleteAccount(final String mobileNumber)
+	{
+		final Customer customer = customerRepository.findByMobileNumber(mobileNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
+
+		customerRepository.deleteById(customer.getCustomerId());
+
+		if (log.isDebugEnabled())
+		{
+			log.trace("Customer with mobile number {} has been deleted", mobileNumber);
+		}
+
+		accountsRepository.deleteByCustomerId(customer.getCustomerId());
+
+		if (log.isDebugEnabled())
+		{
+			log.trace("Account with customer id {} has been deleted", customer.getCustomerId());
+		}
+
+		return true;
+	}
+
+
 }
