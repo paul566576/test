@@ -38,6 +38,20 @@ public class GlobalExceptionHandler
 				LocalDateTime.now()
 		);
 
-		return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(value = { Exception.class })
+	public ResponseEntity<ErrorResponseDto> handleGlobalException(final Exception exception,
+			final WebRequest request)
+	{
+		final ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+				request.getDescription(false),
+				HttpStatus.INTERNAL_SERVER_ERROR,
+				exception.getMessage(),
+				LocalDateTime.now()
+		);
+
+		return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
