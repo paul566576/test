@@ -7,10 +7,9 @@ import com.banking.cards.service.CardsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -28,4 +27,18 @@ public class CardsController
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new ResponseDto(CardsConstants.STATUS_201, CardsConstants.MESSAGE_201));
 	}
+
+	@GetMapping("/fetchCardByCardNumber")
+	public ResponseEntity<CardDto> fetchCardByCardNumber(final @RequestParam String cardNumber)
+	{
+		final CardDto card = cardsService.fetchCardsByCardNumber(cardNumber);
+		return ResponseEntity.status(HttpStatus.OK).body(card);
+	}
+
+	@GetMapping("/fetchCardByMobileNumber")
+	public ResponseEntity<List<CardDto>> fetchCardByMobileNumber(final @RequestParam String mobileNumber)
+	{
+		final List<CardDto> cards = cardsService.fetchCardsByMobileNumber(mobileNumber);
+		return ResponseEntity.status(HttpStatus.OK).body(cards);	}
+
 }

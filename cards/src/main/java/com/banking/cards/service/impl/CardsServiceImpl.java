@@ -4,12 +4,16 @@ import com.banking.cards.constants.CardsConstants;
 import com.banking.cards.dto.CardDto;
 import com.banking.cards.entity.Card;
 import com.banking.cards.exception.CardAlreadyExistsException;
+import com.banking.cards.exception.ResourceNotFoundException;
 import com.banking.cards.mapper.CardMapper;
 import com.banking.cards.repository.CardsRepository;
 import com.banking.cards.service.CardsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -35,5 +39,43 @@ public class CardsServiceImpl implements CardsService
 		{
 			log.trace("New Card with cardNumber: {} has been created", card.getCardNumber());
 		}
+	}
+
+	@Override
+	public List<CardDto> fetchCardsByMobileNumber(final String mobileNumber)
+	{
+		final List<Card> cards = cardsRepository.findByMobileNumber(mobileNumber);
+
+		if (cards.isEmpty())
+		{
+			throw new ResourceNotFoundException("Card", "mobileNumber", mobileNumber);
+		}
+
+		final List<CardDto> cardDtos = new ArrayList<>();
+
+		cards.forEach(card -> {
+			cardDtos.add(CardMapper.mapToCardDto(card, new CardDto()));
+
+			if (log.isDebugEnabled())
+			{
+				log.trace("Card with cardNumber: {} has been successfully fetched", card.getCardNumber());
+			}
+		});
+
+		return cardDtos;
+	}
+
+	@Override
+	public CardDto fetchCardsByCardNumber(final String cardNumber)
+	{
+		final Card card = cardsRepository.findByCardNumber(cardNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Card", "cardNumber", cardNumber));
+
+		if (log.isDebugEnabled())
+		{
+			log.trace("Card with cardNumber: {} has been successfully fetched", card.getCardNumber());
+		}
+
+		return CardMapper.mapToCardDto(card, new CardDto());
 	}
 }
