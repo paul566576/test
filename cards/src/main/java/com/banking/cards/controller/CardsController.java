@@ -29,7 +29,7 @@ import java.util.List;
 @Validated
 @Tag(
 		name = "CRUD REST API for Cards banking",
-		description = "CRUD REST API in banking  to CREATE, UPDATE, FETCH and DELETE card detail"
+		description = "CRUD REST API in banking to CREATE, UPDATE, FETCH and DELETE card detail"
 )
 public class CardsController
 {
@@ -138,7 +138,7 @@ public class CardsController
 	}
 
 	@Operation(
-			summary = "FETCH card REST API",
+			summary = "Delete card REST API",
 			description = "REST API to delet existing card"
 	)
 	@ApiResponses({

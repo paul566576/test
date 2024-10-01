@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
-@OpenAPIDefinition(info = @Info(title = "Accounts microservice REST API Documentation",
-		description = "Banking Card microservice REST API Documentation",
+@OpenAPIDefinition(info = @Info(title = "Cards microservice REST API Documentation",
+		description = "Banking Cards microservice REST API Documentation",
 		version = "v1",
 		contact = @Contact(
 				name = "Pavlo Boldienkov",
@@ -26,7 +26,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 		)
 ),
 		externalDocs = @ExternalDocumentation(
-				description = "Banking Card microservice REST API Documentation",
+				description = "Banking Cards microservice REST API Documentation",
 				url = "http//localhost:9000/swagger-ui.html"
 		)
 )
