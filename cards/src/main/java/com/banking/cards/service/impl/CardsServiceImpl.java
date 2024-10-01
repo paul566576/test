@@ -28,6 +28,12 @@ public class CardsServiceImpl implements CardsService
 	public void createCard(final String mobileNumber)
 	{
 		final Card card = createNewCard(mobileNumber);
+
+		if (cardsRepository.findByCardNumber(card.getCardNumber()).isPresent())
+		{
+			throw new CardAlreadyExistsException(String.format(CardsConstants.CARD_ALREADY_EXISTS_MESSAGE, card.getCardNumber()));
+		}
+
 		cardsRepository.save(card);
 
 		if (log.isDebugEnabled())
@@ -40,7 +46,7 @@ public class CardsServiceImpl implements CardsService
 	 * @param mobileNumber - Mobile Number of the Customer
 	 * @return the new card details
 	 */
-	private Card createNewCard(String mobileNumber)
+	private Card createNewCard(final String mobileNumber)
 	{
 		Card newCard = new Card();
 		long randomCardNumber = 1000000000000000L + new Random().nextLong(9000000000000L);
