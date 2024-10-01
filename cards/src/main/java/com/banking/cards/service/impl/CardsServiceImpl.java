@@ -95,5 +95,20 @@ public class CardsServiceImpl implements CardsService
 		return true;
 	}
 
+	@Override
+	public boolean deleteCard(final String cardNumber)
+	{
+		final Card card = cardsRepository.findByCardNumber(cardNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Card", "cardNumber", cardNumber));
+
+		cardsRepository.deleteById(card.getCardId());
+
+		if (log.isDebugEnabled())
+		{
+			log.trace("Card with cardNumber: {} has been successfully deleted", card.getCardNumber());
+		}
+		return true;
+	}
+
 
 }

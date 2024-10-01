@@ -7,6 +7,7 @@ import com.banking.cards.service.CardsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("cards/api")
 @RequiredArgsConstructor
+@Validated
 public class CardsController
 {
 	private final CardsService cardsService;
@@ -52,6 +54,18 @@ public class CardsController
 		}
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
 				.body(new ResponseDto(CardsConstants.STATUS_417, CardsConstants.MESSAGE_417_UPDATE));
+	}
+
+	@DeleteMapping("/delete")
+	public ResponseEntity<ResponseDto> deleteCard(final @RequestParam String cardNumber)
+	{
+		if (cardsService.deleteCard(cardNumber))
+		{
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseDto(CardsConstants.MESSAGE_200, CardsConstants.STATUS_200));
+		}
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+				.body(new ResponseDto(CardsConstants.STATUS_417, CardsConstants.MESSAGE_417_DELETE));
 	}
 
 }
