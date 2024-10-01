@@ -19,7 +19,7 @@ public interface CardsService
 	 *
 	 * @param mobileNumber String
 	 */
-	List<CardDto> fetchCardsByMobileNumber(final String mobileNumber);
+	CardDto fetchCardsByMobileNumber(final String mobileNumber);
 
 	/**
 	 * Fetch card with given CardNumber.
@@ -37,8 +37,8 @@ public interface CardsService
 
 	/**
 	 *
-	 * @param cardNumber String
+	 * @param mobileNumber String
 	 * @return boolean indicating if the delete of Card details ıs successful or not
 	 */
-	boolean deleteCard(final String cardNumber);
+	boolean deleteCard(final String mobileNumber);
 }

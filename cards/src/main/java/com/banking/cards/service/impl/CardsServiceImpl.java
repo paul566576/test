@@ -34,6 +34,12 @@ public class CardsServiceImpl implements CardsService
 			throw new CardAlreadyExistsException(String.format(CardsConstants.CARD_ALREADY_EXISTS_MESSAGE, card.getCardNumber()));
 		}
 
+		if (cardsRepository.findByMobileNumber(card.getMobileNumber()).isPresent())
+		{
+			throw new CardAlreadyExistsException(
+					String.format(CardsConstants.CARD_WITH_MOBILE_NUMBER_ALREADY_EXISTS_MESSAGE, card.getMobileNumber()));
+		}
+
 		cardsRepository.save(card);
 
 		if (log.isDebugEnabled())
@@ -60,27 +66,17 @@ public class CardsServiceImpl implements CardsService
 	}
 
 	@Override
-	public List<CardDto> fetchCardsByMobileNumber(final String mobileNumber)
+	public CardDto fetchCardsByMobileNumber(final String mobileNumber)
 	{
-		final List<Card> cards = cardsRepository.findByMobileNumber(mobileNumber);
+		final Card card = cardsRepository.findByMobileNumber(mobileNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Card", "mobileNumber", mobileNumber));
 
-		if (cards.isEmpty())
+		if (log.isDebugEnabled())
 		{
-			throw new ResourceNotFoundException("Card", "mobileNumber", mobileNumber);
+			log.trace("Card with cardNumber: {} has been successfully fetched", card.getCardNumber());
 		}
 
-		final List<CardDto> cardDtos = new ArrayList<>();
-
-		cards.forEach(card -> {
-			cardDtos.add(CardMapper.mapToCardDto(card, new CardDto()));
-
-			if (log.isDebugEnabled())
-			{
-				log.trace("Card with cardNumber: {} has been successfully fetched", card.getCardNumber());
-			}
-		});
-
-		return cardDtos;
+		return CardMapper.mapToCardDto(card, new CardDto());
 	}
 
 	@Override
@@ -114,16 +110,16 @@ public class CardsServiceImpl implements CardsService
 	}
 
 	@Override
-	public boolean deleteCard(final String cardNumber)
+	public boolean deleteCard(final String mobileNumber)
 	{
-		final Card card = cardsRepository.findByCardNumber(cardNumber)
-				.orElseThrow(() -> new ResourceNotFoundException("Card", "cardNumber", cardNumber));
+		final Card card = cardsRepository.findByMobileNumber(mobileNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Card", "mobileNumber", mobileNumber));
 
 		cardsRepository.deleteById(card.getCardId());
 
 		if (log.isDebugEnabled())
 		{
-			log.trace("Card with cardNumber: {} has been successfully deleted", card.getCardNumber());
+			log.trace("Card with mobileNumber: {} has been successfully deleted", card.getCardNumber());
 		}
 		return true;
 	}

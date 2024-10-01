@@ -99,11 +99,11 @@ public class CardsController
 			)
 	})
 	@GetMapping("/fetchCardByMobileNumber")
-	public ResponseEntity<List<CardDto>> fetchCardByMobileNumber(
+	public ResponseEntity<CardDto> fetchCardByMobileNumber(
 			final @Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 11 digits") @RequestParam String mobileNumber)
 	{
-		final List<CardDto> cards = cardsService.fetchCardsByMobileNumber(mobileNumber);
-		return ResponseEntity.status(HttpStatus.OK).body(cards);
+		final CardDto card = cardsService.fetchCardsByMobileNumber(mobileNumber);
+		return ResponseEntity.status(HttpStatus.OK).body(card);
 	}
 
 	@Operation(
@@ -158,9 +158,9 @@ public class CardsController
 	})
 	@DeleteMapping("/delete")
 	public ResponseEntity<ResponseDto> deleteCard(
-			final @Pattern(regexp = "(^$|[0-9]{16})", message = "Card number must be 16 digits") @RequestParam String cardNumber)
+			final @Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 11 digits") @RequestParam String mobileNumber)
 	{
-		if (cardsService.deleteCard(cardNumber))
+		if (cardsService.deleteCard(mobileNumber))
 		{
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseDto(CardsConstants.MESSAGE_200, CardsConstants.STATUS_200));
