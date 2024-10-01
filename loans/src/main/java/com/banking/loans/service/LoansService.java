@@ -27,4 +27,11 @@ public interface LoansService
 	 * @param loanNumber String
 	 */
 	LoanDto fetchLoansByLoanNumber(final String loanNumber);
+
+	/**
+	 *
+	 * @param loanDto LoanDto
+	 * @return boolean indicating if the update of Loan details ıs successful or not
+	 */
+	boolean updateLoan(final LoanDto loanDto);
 }

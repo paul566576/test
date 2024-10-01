@@ -4,15 +4,13 @@ import com.banking.loans.constants.LoansConstants;
 import com.banking.loans.dto.LoanDto;
 import com.banking.loans.dto.ResponseDto;
 import com.banking.loans.service.LoansService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,6 +49,18 @@ public class LoansController
 	{
 		final List<LoanDto> loans = loansService.fetchLoansByMobileNumber(mobileNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(loans);
+	}
+
+	@PutMapping("/update")
+	public ResponseEntity<ResponseDto> updateLoan(final @Valid @RequestBody LoanDto loanDto)
+	{
+		if (loansService.updateLoan(loanDto))
+		{
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseDto(LoansConstants.MESSAGE_200, LoansConstants.STATUS_200));
+		}
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+				.body(new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_UPDATE));
 	}
 
 }
