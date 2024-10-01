@@ -1,10 +1,7 @@
 package com.banking.cards.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 
@@ -30,13 +27,13 @@ public class CardDto
 	@NotEmpty(message = "CardType can't be null or empty")
 	@Schema(description = "Card type of banking account", example = "CREDIT")
 	private String cardType;
-	@NotNull(message = "TotalLimit can't be null or empty")
-	@Schema(description = "Total limit of the card")
+	@PositiveOrZero(message = "TotalLimit limit should be greater than zero")
+	@Schema(description = "Total limit of the card", example = "9000")
 	private int totalLimit;
-	@NotNull(message = "AmountUsed can't be null or empty")
-	@Schema(description = "Used amount of the card")
+	@PositiveOrZero(message = "AmountUsed limit should be greater than zero")
+	@Schema(description = "Used amount of the card", example = "9000")
 	private int amountUsed;
-	@NotNull(message = "AvailableAmount can't be null or empty")
-	@Schema(description = "Available amount fo the card")
+	@PositiveOrZero(message = "AvailableAmount limit should be greater than zero")
+	@Schema(description = "Available amount to the card", example = "9000")
 	private int availableAmount;
 }

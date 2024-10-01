@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -24,21 +25,32 @@ public class CardsServiceImpl implements CardsService
 	private final CardsRepository cardsRepository;
 
 	@Override
-	public void createCard(final CardDto cardDto)
+	public void createCard(final String mobileNumber)
 	{
-		final Card card = CardMapper.mapToCard(cardDto, new Card());
-
-		if (cardsRepository.findByCardNumber(cardDto.getCardNumber()).isPresent())
-		{
-			throw new CardAlreadyExistsException(String.format(
-					CardsConstants.CARD_ALREADY_EXISTS_MESSAGE, cardDto.getCardNumber()));
-		}
-
+		final Card card = createNewCard(mobileNumber);
 		cardsRepository.save(card);
+
 		if (log.isDebugEnabled())
 		{
 			log.trace("New Card with cardNumber: {} has been created", card.getCardNumber());
 		}
+	}
+
+	/**
+	 * @param mobileNumber - Mobile Number of the Customer
+	 * @return the new card details
+	 */
+	private Card createNewCard(String mobileNumber)
+	{
+		Card newCard = new Card();
+		long randomCardNumber = 1000000000000000L + new Random().nextLong(9000000000000L);
+		newCard.setCardNumber(Long.toString(randomCardNumber));
+		newCard.setMobileNumber(mobileNumber);
+		newCard.setCardType(CardsConstants.CARD_TYPE);
+		newCard.setTotalLimit(CardsConstants.NEW_CARD_LIMIT);
+		newCard.setAmountUsed(0);
+		newCard.setAvailableAmount(CardsConstants.NEW_CARD_LIMIT);
+		return newCard;
 	}
 
 	@Override

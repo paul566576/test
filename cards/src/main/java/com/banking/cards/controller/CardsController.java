@@ -51,9 +51,10 @@ public class CardsController
 			)
 	})
 	@PostMapping("/create")
-	public ResponseEntity<ResponseDto> createCard(final @Valid @RequestBody CardDto cardDto)
+	public ResponseEntity<ResponseDto> createCard(
+			final @Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 16 digits") @RequestParam String mobileNumber)
 	{
-		cardsService.createCard(cardDto);
+		cardsService.createCard(mobileNumber);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new ResponseDto(CardsConstants.STATUS_201, CardsConstants.MESSAGE_201));

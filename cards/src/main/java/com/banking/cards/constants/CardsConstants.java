@@ -7,6 +7,8 @@ public class CardsConstants
 	}
 
 	public static final String CARD_ALREADY_EXISTS_MESSAGE = "Card with number %s already exists";
+	public static final String CARD_TYPE = "CREDIT";
+	public static final int  NEW_CARD_LIMIT = 1_00_000;
 	public static final String STATUS_201 = "201";
 	public static final String MESSAGE_201 = "Card created successfully";
 	public static final String STATUS_200 = "200";

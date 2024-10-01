@@ -8,11 +8,11 @@ import java.util.List;
 public interface CardsService
 {
 	/**
-	 * Creates new Card based on CardDto data.
+	 * Creates new Card based on mobile number.
 	 *
-	 * @param cardDto CardDto
+	 * @param mobileNumber String
 	 */
-	void createCard(final CardDto cardDto);
+	void createCard(final String mobileNumber);
 
 	/**
 	 * Fetch all cards with given MobileNumber.
