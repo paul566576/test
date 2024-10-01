@@ -28,7 +28,7 @@ public class CardDto
 	@Schema(description = "Mobile number of the customer", example = "48571932698")
 	private String mobileNumber;
 	@NotEmpty(message = "CardType can't be null or empty")
-	@Schema(description = "Card type of banking account")
+	@Schema(description = "Card type of banking account", example = "CREDIT")
 	private String cardType;
 	@NotNull(message = "TotalLimit can't be null or empty")
 	@Schema(description = "Total limit of the card")
