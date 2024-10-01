@@ -1,14 +1,19 @@
 package com.banking.loans.service.impl;
 
 import com.banking.loans.constants.LoansConstants;
+import com.banking.loans.dto.LoanDto;
 import com.banking.loans.entity.Loan;
 import com.banking.loans.exception.LoanAlreadyExistsException;
+import com.banking.loans.exception.ResourceNotFoundException;
+import com.banking.loans.mapper.LoanMapper;
 import com.banking.loans.repository.LoansRepository;
 import com.banking.loans.service.LoansService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -35,18 +40,54 @@ public class LoansServiceImpl implements LoansService
 
 		if (log.isDebugEnabled())
 		{
-			log.trace("New Card with loanNumber: {} has been created", loan.getLoanNumber());
+			log.trace("New loan with loanNumber: {} has been created", loan.getLoanNumber());
 		}
+	}
+
+	@Override
+	public List<LoanDto> fetchLoansByMobileNumber(final String mobileNumber)
+	{
+		final List<Loan> loans = loansRepository.findByMobileNumber(mobileNumber);
+
+		if (loans.isEmpty())
+		{
+			throw new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber);
+		}
+
+		final List<LoanDto> loansDto = new ArrayList<>();
+
+		loans.forEach(loan -> {
+			loansDto.add(LoanMapper.mapToLoanDto(loan, new LoanDto()));
+			if (log.isDebugEnabled())
+			{
+				log.trace("Loan with loanNumber: {} has been fetched successfully", loan.getLoanNumber());
+			}
+		});
+		return loansDto;
+	}
+
+	@Override
+	public LoanDto fetchLoansByLoanNumber(final String loanNumber)
+	{
+		final Loan loan = loansRepository.findByLoanNumber(loanNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Loan", "LoanNumber", loanNumber));
+
+		if (log.isDebugEnabled())
+		{
+			log.trace("Loan with loanNumber: {} has been fetched successfully", loan.getLoanNumber());
+		}
+
+		return LoanMapper.mapToLoanDto(loan, new LoanDto());
 	}
 
 	/**
 	 * @param mobileNumber - Mobile Number of the Customer
 	 * @return the new loan details
 	 */
-	private Loan createNewLoan(String mobileNumber)
+	private Loan createNewLoan(final String mobileNumber)
 	{
-		Loan newLoan = new Loan();
-		long randomLoanNumber = 100000000000L + new Random().nextInt(900000000);
+		final Loan newLoan = new Loan();
+		final long randomLoanNumber = 100000000000L + new Random().nextInt(900000000);
 		newLoan.setLoanNumber(Long.toString(randomLoanNumber));
 		newLoan.setMobileNumber(mobileNumber);
 		newLoan.setLoanType(LoansConstants.HOME_LOAN);
@@ -55,4 +96,6 @@ public class LoansServiceImpl implements LoansService
 		newLoan.setOutstandingAmount(LoansConstants.NEW_LOAN_LIMIT);
 		return newLoan;
 	}
+
+
 }

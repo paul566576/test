@@ -17,7 +17,7 @@ public class LoanDto
 	@Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 11 digits")
 	private String mobileNumber;
 	@NotEmpty(message = "Loan number can't be null or empty")
-	@Pattern(regexp = "(^$|[0-9]{12})", message = "Mobile number must be 12 digits")
+	@Pattern(regexp = "(^$|[0-9]{12})", message = "Loan number must be 12 digits")
 	private String loanNumber;
 	@NotEmpty(message = "Loan Type can't be null or empty")
 	private String loanType;
