@@ -63,4 +63,17 @@ public class LoansController
 				.body(new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_UPDATE));
 	}
 
+	@DeleteMapping("/delete")
+	public ResponseEntity<ResponseDto> deleteLoan(
+			final @Pattern(regexp = "(^$|[0-9]{12})", message = "Loan number must be 12 digits")
+			@RequestParam String loanNumber)
+	{
+		if (loansService.deleteLoan(loanNumber))
+		{
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseDto(LoansConstants.MESSAGE_200, LoansConstants.STATUS_200));
+		}
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+				.body(new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_DELETE));
+	}
 }

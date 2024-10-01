@@ -97,6 +97,20 @@ public class LoansServiceImpl implements LoansService
 		return true;
 	}
 
+	@Override
+	public boolean deleteLoan(final String loanNumber)
+	{
+		final Loan loan = loansRepository.findByLoanNumber(loanNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Loan", "LoanNumber", loanNumber));
+
+		loansRepository.deleteById(loan.getLoanId());
+
+		if (log.isDebugEnabled())
+		{
+			log.trace("Loan with LoanNumber: {} has been successfully deleted", loan.getLoanNumber());
+		}
+		return true;
+	}
 
 
 	/**

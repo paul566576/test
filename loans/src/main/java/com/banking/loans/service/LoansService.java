@@ -34,4 +34,11 @@ public interface LoansService
 	 * @return boolean indicating if the update of Loan details ıs successful or not
 	 */
 	boolean updateLoan(final LoanDto loanDto);
+
+	/**
+	 *
+	 * @param loanNumber String
+	 * @return boolean indicating if the delete of Loan details ıs successful or not
+	 */
+	boolean deleteLoan(final String loanNumber);
 }
