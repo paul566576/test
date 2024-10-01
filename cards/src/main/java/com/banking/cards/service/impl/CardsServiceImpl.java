@@ -24,8 +24,11 @@ public class CardsServiceImpl implements CardsService
 	{
 		final Card card = CardMapper.mapToCard(cardDto, new Card());
 
-		cardsRepository.findByCardNumber(cardDto.getCardNumber()).orElseThrow(() -> new CardAlreadyExistsException(String.format(
-				CardsConstants.CARD_ALREADY_EXISTS_MESSAGE, cardDto.getCardNumber())));
+		if (cardsRepository.findByCardNumber(cardDto.getCardNumber()).isPresent())
+		{
+			throw new CardAlreadyExistsException(String.format(
+					CardsConstants.CARD_ALREADY_EXISTS_MESSAGE, cardDto.getCardNumber()));
+		}
 
 		cardsRepository.save(card);
 		if (log.isDebugEnabled())

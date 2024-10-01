@@ -1,14 +1,16 @@
 package com.banking.cards.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -18,24 +20,24 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Card
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@NotEmpty
 	private Long cardId;
-	@NotEmpty
 	private String cardNumber;
-	@NotEmpty
+	private String mobileNumber;
 	private String cardType;
-	@NotEmpty
 	private int totalLimit;
-	@NotEmpty
 	private int amountUsed;
-	@NotEmpty
 	private int availableAmount;
+	@CreationTimestamp
 	private LocalDateTime createdAt;
+	@LastModifiedDate
 	private LocalDateTime updatedAt;
+	@CreatedBy
 	private String createdBy;
+	@LastModifiedBy
 	private String updatedBy;
 }
