@@ -4,6 +4,8 @@ import com.banking.cards.constants.CardsConstants;
 import com.banking.cards.dto.CardDto;
 import com.banking.cards.dto.ResponseDto;
 import com.banking.cards.service.CardsService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ public class CardsController
 	private final CardsService cardsService;
 
 	@PostMapping("/create")
-	public ResponseEntity<ResponseDto> createCard(final @RequestBody CardDto cardDto)
+	public ResponseEntity<ResponseDto> createCard(final @Valid @RequestBody CardDto cardDto)
 	{
 		cardsService.createCard(cardDto);
 
@@ -31,21 +33,23 @@ public class CardsController
 	}
 
 	@GetMapping("/fetchCardByCardNumber")
-	public ResponseEntity<CardDto> fetchCardByCardNumber(final @RequestParam String cardNumber)
+	public ResponseEntity<CardDto> fetchCardByCardNumber(
+			final @Pattern(regexp = "(^$|[0-9]{16})", message = "Card number must be 16 digits") @RequestParam String cardNumber)
 	{
 		final CardDto card = cardsService.fetchCardsByCardNumber(cardNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(card);
 	}
 
 	@GetMapping("/fetchCardByMobileNumber")
-	public ResponseEntity<List<CardDto>> fetchCardByMobileNumber(final @RequestParam String mobileNumber)
+	public ResponseEntity<List<CardDto>> fetchCardByMobileNumber(
+			final @Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 11 digits") @RequestParam String mobileNumber)
 	{
 		final List<CardDto> cards = cardsService.fetchCardsByMobileNumber(mobileNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(cards);
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<ResponseDto> updateCard(final @RequestBody CardDto cardDto)
+	public ResponseEntity<ResponseDto> updateCard(final @Valid @RequestBody CardDto cardDto)
 	{
 		if (cardsService.updateCard(cardDto))
 		{
@@ -57,7 +61,8 @@ public class CardsController
 	}
 
 	@DeleteMapping("/delete")
-	public ResponseEntity<ResponseDto> deleteCard(final @RequestParam String cardNumber)
+	public ResponseEntity<ResponseDto> deleteCard(
+			final @Pattern(regexp = "(^$|[0-9]{16})", message = "Card number must be 16 digits") @RequestParam String cardNumber)
 	{
 		if (cardsService.deleteCard(cardNumber))
 		{
