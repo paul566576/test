@@ -115,7 +115,7 @@ public class AccountController
 
 	@Operation(
 			summary = "FETCH account REST API",
-			description = "REST API to update existing customer and account"
+			description = "REST API to delete existing customer and account"
 	)
 	@ApiResponses({
 			@ApiResponse(
@@ -124,7 +124,7 @@ public class AccountController
 			),
 			@ApiResponse(
 					responseCode = "417",
-					description = "HTTP status Update Server Error"
+					description = "HTTP status Delete Server Error"
 			),
 			@ApiResponse(
 					responseCode = "500",
