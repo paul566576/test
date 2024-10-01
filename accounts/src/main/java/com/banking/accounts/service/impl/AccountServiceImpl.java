@@ -91,7 +91,6 @@ public class AccountServiceImpl implements AccountService
 			Accounts accounts = accountsRepository.findById(accountsDto.getAccountNumber()).orElseThrow(
 					() -> new ResourceNotFoundException("Account", "AccountNumber", accountsDto.getAccountNumber().toString()));
 
-
 			AccountsMapper.mapToAccounts(accountsDto, accounts);
 			accounts = accountsRepository.save(accounts);
 

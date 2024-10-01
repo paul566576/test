@@ -78,4 +78,22 @@ public class CardsServiceImpl implements CardsService
 
 		return CardMapper.mapToCardDto(card, new CardDto());
 	}
+
+	@Override
+	public boolean updateCard(final CardDto cardDto)
+	{
+		final Card card = cardsRepository.findByCardNumber(cardDto.getCardNumber())
+				.orElseThrow(() -> new ResourceNotFoundException("Card", "cardNumber", cardDto.getCardNumber()));
+		CardMapper.mapToCard(cardDto, card);
+
+		cardsRepository.save(card);
+
+		if (log.isDebugEnabled())
+		{
+			log.trace("Card with cardNumber: {} has been successfully updated", card.getCardNumber());
+		}
+		return true;
+	}
+
+
 }

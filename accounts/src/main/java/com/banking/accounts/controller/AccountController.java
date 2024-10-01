@@ -110,7 +110,7 @@ public class AccountController
 					.body(new ResponseDto(AccountConstants.MESSAGE_200, AccountConstants.STATUS_200));
 		}
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-				.body(new ResponseDto(AccountConstants.MESSAGE_417_UPDATE, AccountConstants.MESSAGE_417_UPDATE));
+				.body(new ResponseDto(AccountConstants.STATUS_417, AccountConstants.MESSAGE_417_UPDATE));
 	}
 
 	@Operation(

@@ -39,6 +39,19 @@ public class CardsController
 	public ResponseEntity<List<CardDto>> fetchCardByMobileNumber(final @RequestParam String mobileNumber)
 	{
 		final List<CardDto> cards = cardsService.fetchCardsByMobileNumber(mobileNumber);
-		return ResponseEntity.status(HttpStatus.OK).body(cards);	}
+		return ResponseEntity.status(HttpStatus.OK).body(cards);
+	}
+
+	@PutMapping("/update")
+	public ResponseEntity<ResponseDto> updateCard(final @RequestBody CardDto cardDto)
+	{
+		if (cardsService.updateCard(cardDto))
+		{
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseDto(CardsConstants.MESSAGE_200, CardsConstants.STATUS_200));
+		}
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+				.body(new ResponseDto(CardsConstants.STATUS_417, CardsConstants.MESSAGE_417_UPDATE));
+	}
 
 }

@@ -27,4 +27,11 @@ public interface CardsService
 	 * @param cardNumber String
 	 */
 	CardDto fetchCardsByCardNumber(final String cardNumber);
+
+	/**
+	 *
+	 * @param cardDto CardDto
+	 * @return boolean indicating if the update of Cards details ıs successful or not
+	 */
+	boolean updateCard(final CardDto cardDto);
 }
