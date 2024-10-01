@@ -99,12 +99,12 @@ public class LoansController
 			)
 	})
 	@GetMapping("/fetchLoansByMobileNumber")
-	public ResponseEntity<List<LoanDto>> fetchLoanByMobileNumber(
+	public ResponseEntity<LoanDto> fetchLoanByMobileNumber(
 			final @Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 11 digits")
 			@RequestParam String mobileNumber)
 	{
-		final List<LoanDto> loans = loansService.fetchLoansByMobileNumber(mobileNumber);
-		return ResponseEntity.status(HttpStatus.OK).body(loans);
+		final LoanDto loan = loansService.fetchLoansByMobileNumber(mobileNumber);
+		return ResponseEntity.status(HttpStatus.OK).body(loan);
 	}
 
 	@Operation(
@@ -159,10 +159,10 @@ public class LoansController
 	})
 	@DeleteMapping("/delete")
 	public ResponseEntity<ResponseDto> deleteLoan(
-			final @Pattern(regexp = "(^$|[0-9]{12})", message = "Loan number must be 12 digits")
-			@RequestParam String loanNumber)
+			final @Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 12 digits")
+			@RequestParam String mobileNumber)
 	{
-		if (loansService.deleteLoan(loanNumber))
+		if (loansService.deleteLoan(mobileNumber))
 		{
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseDto(LoansConstants.MESSAGE_200, LoansConstants.STATUS_200));

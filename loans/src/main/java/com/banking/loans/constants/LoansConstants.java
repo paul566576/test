@@ -9,6 +9,7 @@ public class LoansConstants
 	}
 
 	public static final String LOAN_ALREADY_EXISTS_MESSAGE = "Loan with number %s already exists";
+	public static final String LOAN_WITH_MOBILE_NUMBER_ALREADY_EXISTS_MESSAGE = "Loan with mobile number %s already exists";
 	public static final String HOME_LOAN = "Home Loan";
 	public static final int NEW_LOAN_LIMIT = 1_00_000;
 	public static final String STATUS_201 = "201";

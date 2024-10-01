@@ -15,11 +15,11 @@ public interface LoansService
 	void createLoan(final String mobileNumber);
 
 	/**
-	 * Fetch all cards by given MobileNumber.
+	 * Fetch all loans by given MobileNumber.
 	 *
 	 * @param mobileNumber String
 	 */
-	List<LoanDto> fetchLoansByMobileNumber(final String mobileNumber);
+	LoanDto fetchLoansByMobileNumber(final String mobileNumber);
 
 	/**
 	 * Fetch loan by given LoanNumber.
@@ -37,8 +37,8 @@ public interface LoansService
 
 	/**
 	 *
-	 * @param loanNumber String
+	 * @param mobileNumber String
 	 * @return boolean indicating if the delete of Loan details ıs successful or not
 	 */
-	boolean deleteLoan(final String loanNumber);
+	boolean deleteLoan(final String mobileNumber);
 }

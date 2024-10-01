@@ -36,6 +36,12 @@ public class LoansServiceImpl implements LoansService
 			throw new LoanAlreadyExistsException(String.format(LoansConstants.LOAN_ALREADY_EXISTS_MESSAGE, loan.getLoanNumber()));
 		}
 
+		if (loansRepository.findByMobileNumber(loan.getMobileNumber()).isPresent())
+		{
+			throw new LoanAlreadyExistsException(
+					String.format(LoansConstants.LOAN_WITH_MOBILE_NUMBER_ALREADY_EXISTS_MESSAGE, loan.getMobileNumber()));
+		}
+
 		loansRepository.save(loan);
 
 		if (log.isDebugEnabled())
@@ -45,25 +51,17 @@ public class LoansServiceImpl implements LoansService
 	}
 
 	@Override
-	public List<LoanDto> fetchLoansByMobileNumber(final String mobileNumber)
+	public LoanDto fetchLoansByMobileNumber(final String mobileNumber)
 	{
-		final List<Loan> loans = loansRepository.findByMobileNumber(mobileNumber);
+		final Loan loan = loansRepository.findByMobileNumber(mobileNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber));
 
-		if (loans.isEmpty())
+		if (log.isDebugEnabled())
 		{
-			throw new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber);
+			log.trace("Loan with loanNumber: {} has been fetched successfully", loan.getLoanNumber());
 		}
 
-		final List<LoanDto> loansDto = new ArrayList<>();
-
-		loans.forEach(loan -> {
-			loansDto.add(LoanMapper.mapToLoanDto(loan, new LoanDto()));
-			if (log.isDebugEnabled())
-			{
-				log.trace("Loan with loanNumber: {} has been fetched successfully", loan.getLoanNumber());
-			}
-		});
-		return loansDto;
+		return LoanMapper.mapToLoanDto(loan, new LoanDto());
 	}
 
 	@Override
@@ -98,16 +96,16 @@ public class LoansServiceImpl implements LoansService
 	}
 
 	@Override
-	public boolean deleteLoan(final String loanNumber)
+	public boolean deleteLoan(final String mobileNumber)
 	{
-		final Loan loan = loansRepository.findByLoanNumber(loanNumber)
-				.orElseThrow(() -> new ResourceNotFoundException("Loan", "LoanNumber", loanNumber));
+		final Loan loan = loansRepository.findByMobileNumber(mobileNumber)
+				.orElseThrow(() -> new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber));
 
 		loansRepository.deleteById(loan.getLoanId());
 
 		if (log.isDebugEnabled())
 		{
-			log.trace("Loan with LoanNumber: {} has been successfully deleted", loan.getLoanNumber());
+			log.trace("Loan with mobileNumber: {} has been successfully deleted", loan.getMobileNumber());
 		}
 		return true;
 	}
