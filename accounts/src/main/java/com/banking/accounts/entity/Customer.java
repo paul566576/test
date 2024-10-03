@@ -18,12 +18,8 @@ public class Customer extends BaseEntity
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@NotEmpty
 	private Long customerId;
-	@NotEmpty
 	private String name;
-	@NotEmpty
 	private String email;
-	@NotEmpty
 	private String mobileNumber;
 }
