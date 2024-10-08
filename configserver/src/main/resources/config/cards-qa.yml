@@ -1,13 +1,8 @@
-spring:
-  config:
-    activate:
-      on-profile: "prod"
-
 build:
   version: "1.0"
 
 cards:
-  message: "Welcome to Banking cards related prod APIs "
+  message: "Welcome to Banking cards related QA APIs "
   contactDetails:
     name: "Sandra Harald - Product Owner"
     email: "sandra@eazybank.com"
