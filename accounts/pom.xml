@@ -116,7 +116,7 @@
                 <version>3.4.2</version>
                 <configuration>
                     <to>
-                        <image>pavelboldienkov/${project.artifactId}:1.1</image>
+                        <image>pavelboldienkov/${project.artifactId}:1.2</image>
                     </to>
                 </configuration>
             </plugin>
