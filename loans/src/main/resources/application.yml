@@ -5,7 +5,7 @@ spring:
   application:
     name: "loans"
   profiles:
-    active: "qa"
+    active: "prod"
   datasource:
     url: jdbc:mysql://localhost:3308/loansdb
     username: root

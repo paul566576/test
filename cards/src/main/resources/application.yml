@@ -5,7 +5,7 @@ spring:
   application:
     name: "cards"
   profiles:
-    active: "qa"
+    active: "prod"
   datasource:
     url: jdbc:mysql://localhost:3307/cardsdb
     username: root

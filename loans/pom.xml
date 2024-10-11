@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>loans</name>
-	<description>loans</description>
+	<description>Microservice for Laons</description>
 	<url/>
 	<licenses>
 		<license/>
