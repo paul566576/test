@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient("cards")
 public interface CardFeignClient
 {
-	@GetMapping(value = "cards/api/fetchCardByMobileNumber", consumes = "application/json")
+	@GetMapping(value = "/api/fetchCardByMobileNumber", consumes = "application/json")
 	ResponseEntity<CardDto> fetchCardByMobileNumber(final @RequestParam String mobileNumber);
 }
