@@ -26,7 +26,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/loans/api")
+@RequestMapping("/api")
 @Validated
 @RequiredArgsConstructor
 @Tag(
