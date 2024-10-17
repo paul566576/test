@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -27,13 +28,14 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(path = "cards/api", produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
 @RequiredArgsConstructor
 @Validated
 @Tag(
 		name = "CRUD REST API for Cards banking",
 		description = "CRUD REST API in banking to CREATE, UPDATE, FETCH and DELETE card detail"
 )
+@Slf4j
 public class CardsController
 {
 	private final CardsService cardsService;
@@ -108,8 +110,13 @@ public class CardsController
 	})
 	@GetMapping("/fetchCardByMobileNumber")
 	public ResponseEntity<CardDto> fetchCardByMobileNumber(
+			final @RequestHeader("banking-correlation-id") String correlationId,
 			final @Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 11 digits") @RequestParam String mobileNumber)
 	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("Banking correlation id found: {}", correlationId);
+		}
 		final CardDto card = cardsService.fetchCardsByMobileNumber(mobileNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(card);
 	}

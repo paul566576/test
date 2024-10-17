@@ -13,7 +13,8 @@ public interface CustomerService
 	 * In case when Customer, Accounts or Loans  with given mobileNumber is not found ResourceNotFoundException should be thrown
 	 *
 	 * @param mobileNumber string
+	 * @param correlationId string
 	 * @return CustomerDetailsDto
 	 */
-	CustomerDetailsDto fetchCustomerDetailsByMobileNumber(final String mobileNumber);
+	CustomerDetailsDto fetchCustomerDetailsByMobileNumber(final String mobileNumber, final String correlationId);
 }

@@ -12,24 +12,23 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping(path = "/accounts/api", produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
 @Validated
 @RequiredArgsConstructor
 @Tag(
 		name = "CRUD REST API for Customer in banking",
 		description = "CRUD REST API in banking to FETCH customer detail"
 )
+@Slf4j
 public class CustomerController
 {
 	private final CustomerService customerService;
@@ -51,10 +50,15 @@ public class CustomerController
 	})
 	@GetMapping("/fetchCustomerDetails")
 	public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(
+			final @RequestHeader("banking-correlation-id") String correlationId,
 			final @Pattern(regexp = "(^$|[0-9]{11})", message = "Mobile number must be 11 digits")
 			@RequestParam String mobileNumber)
 	{
-		final CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetailsByMobileNumber(mobileNumber);
+		if (log.isDebugEnabled())
+		{
+			log.debug("Banking correlation id found: {}", correlationId);
+		}
+		final CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetailsByMobileNumber(mobileNumber, correlationId);
 
 		return ResponseEntity.status(HttpStatus.OK).body(customerDetailsDto);
 

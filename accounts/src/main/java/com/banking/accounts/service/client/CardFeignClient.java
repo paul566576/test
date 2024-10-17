@@ -4,12 +4,14 @@ import com.banking.accounts.dto.CardDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
 @FeignClient("cards")
 public interface CardFeignClient
 {
-	@GetMapping(value = "cards/api/fetchCardByMobileNumber", consumes = "application/json")
-	ResponseEntity<CardDto> fetchCardByMobileNumber(final @RequestParam String mobileNumber);
+	@GetMapping(value = "/api/fetchCardByMobileNumber", consumes = "application/json")
+	ResponseEntity<CardDto> fetchCardByMobileNumber(final @RequestHeader("banking-correlation-id") String correlationId,
+			final @RequestParam String mobileNumber);
 }

@@ -24,17 +24,17 @@ public class CustomerServiceImpl implements CustomerService
 	private final LoansFeignClient loansFeignClient;
 
 	@Override
-	public CustomerDetailsDto fetchCustomerDetailsByMobileNumber(final String mobileNumber)
+	public CustomerDetailsDto fetchCustomerDetailsByMobileNumber(final String mobileNumber, final String correlationId)
 	{
 		final CustomerDto customerDto = accountService.getCustomerByMobileNumber(mobileNumber);
-		final CardDto cardDto = cardFeignClient.fetchCardByMobileNumber(mobileNumber).getBody();
+		final CardDto cardDto = cardFeignClient.fetchCardByMobileNumber(correlationId, mobileNumber).getBody();
 
 		if (log.isDebugEnabled())
 		{
 			log.debug("Fetch card details by mobile number: {}", mobileNumber);
 		}
 
-		final LoanDto loanDto = loansFeignClient.fetchLoanByMobileNumber(mobileNumber).getBody();
+		final LoanDto loanDto = loansFeignClient.fetchLoanByMobileNumber(correlationId, mobileNumber).getBody();
 
 		if (log.isDebugEnabled())
 		{
