@@ -7,7 +7,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
+          enabled: false
           lower-case-service-id: true
   rabbitmq:
     host: "localhost"
@@ -32,4 +32,11 @@ info:
     name: "gatewayserver"
     description: "Banking Gateway Server Application"
     version: "1.0.0"
+
+logging:
+  level:
+    com:
+      banking:
+        gatewayserver: DEBUG
+
 
