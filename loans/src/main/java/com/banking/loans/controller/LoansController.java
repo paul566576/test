@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import java.util.List;
 		name = "CRUD REST API for Loans banking",
 		description = "CRUD REST API in banking to CREATE, UPDATE, FETCH and DELETE loan detail"
 )
+@Slf4j
 public class LoansController
 {
 	private final LoansService loansService;
@@ -84,9 +86,15 @@ public class LoansController
 	})
 	@GetMapping("/fetchLoanByNumber")
 	public ResponseEntity<LoanDto> fetchLoanByLoanNumber(
+			final @RequestHeader("banking-correlation-id") String correlationId,
 			final @Pattern(regexp = "(^$|[0-9]{12})", message = "Loan number must be 12 digits")
 			@RequestParam String loanNumber)
 	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("Banking correlation id found: {}", correlationId);
+		}
+
 		final LoanDto loan = loansService.fetchLoansByLoanNumber(loanNumber);
 		return ResponseEntity.status(HttpStatus.OK).body(loan);
 	}
