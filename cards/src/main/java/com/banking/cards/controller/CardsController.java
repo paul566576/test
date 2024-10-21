@@ -6,6 +6,7 @@ import com.banking.cards.dto.CardsContactInfoDto;
 import com.banking.cards.dto.ErrorResponseDto;
 import com.banking.cards.dto.ResponseDto;
 import com.banking.cards.service.CardsService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -202,11 +203,26 @@ public class CardsController
 			)
 	}
 	)
+	@Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
 	@GetMapping("/build-info")
-	public ResponseEntity<String> getBuildInfo() {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(buildVersion);
+	public ResponseEntity<String> getBuildInformation()
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getBuildInfo() method invoked");
+		}
+		//		Just example for checking ignore exception functionality
+		//		throw new NullPointerException();
+		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+	}
+
+	public ResponseEntity<String> getBuildInfoFallback(final Throwable throwable)
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getBuildInfoFallback() method invoked");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(CardsConstants.DEFAULT_BUILD_VERSION);
 	}
 
 	@Operation(
@@ -227,11 +243,21 @@ public class CardsController
 			)
 	}
 	)
+	@Retry(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
 	@GetMapping("/java-version")
-	public ResponseEntity<String> getJavaVersion() {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(environment.getProperty("JAVA_HOME"));
+	public ResponseEntity<String> getJavaVersion()
+	{
+		return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty(CardsConstants.JAVA_HOME));
+	}
+
+	public ResponseEntity<String> getJavaVersionFallback()
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getJavaVersionFallback() method invoked");
+		}
+		// By default should be used java 21
+		return ResponseEntity.status(HttpStatus.OK).body(CardsConstants.DEFAULT_JAVA_VERSION);
 	}
 
 	@Operation(
@@ -252,10 +278,30 @@ public class CardsController
 			)
 	}
 	)
+	@Retry(name = "getContactInfo", fallbackMethod = "getContactInfoFallback")
 	@GetMapping("/contact-info")
-	public ResponseEntity<CardsContactInfoDto> getContactInfo() {
+	public ResponseEntity<CardsContactInfoDto> getContactInfo()
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("Invoked Accounts contact-info API");
+		}
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(cardsContactInfoDto);
+	}
+
+	public ResponseEntity<CardsContactInfoDto> getContactInfoFallback()
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getContactInfoFallback() method invoked");
+		}
+
+		final CardsContactInfoDto cardsContactInfoDto1 = new CardsContactInfoDto();
+		cardsContactInfoDto1.setMessage(CardsConstants.WELCOME_TO_BANKING_ACCOUNTS_DEFAULT_MESSAGE);
+		cardsContactInfoDto1.setOnCallSupport(CardsConstants.ON_CALL_SUPPORT_DEFAULT_PHONE_NUMBERS);
+		cardsContactInfoDto1.setContactDetails(CardsConstants.DEFAULT_CONTACT_DETAILS_DATA);
+		return ResponseEntity.status(HttpStatus.OK).body(cardsContactInfoDto1);
 	}
 }
