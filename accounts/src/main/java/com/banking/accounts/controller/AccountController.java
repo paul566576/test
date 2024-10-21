@@ -6,6 +6,7 @@ import com.banking.accounts.dto.CustomerDto;
 import com.banking.accounts.dto.ErrorResponseDto;
 import com.banking.accounts.dto.ResponseDto;
 import com.banking.accounts.service.AccountService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -176,6 +177,7 @@ public class AccountController
 			)
 	}
 	)
+	@RateLimiter(name = "getBuildInfoRateLimiter", fallbackMethod = "getBuildInfoFallback")
 	@Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
 	@GetMapping("/build-info")
 	public ResponseEntity<String> getBuildInformation()
@@ -216,6 +218,7 @@ public class AccountController
 			)
 	}
 	)
+	@RateLimiter(name = "getJavaVersionRateLimiter", fallbackMethod = "getJavaVersionFallback")
 	@Retry(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
 	@GetMapping("/java-version")
 	public ResponseEntity<String> getJavaVersion()
@@ -223,7 +226,7 @@ public class AccountController
 		return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty(AccountConstants.JAVA_HOME));
 	}
 
-	public ResponseEntity<String> getJavaVersionFallback()
+	public ResponseEntity<String> getJavaVersionFallback(final Throwable throwable)
 	{
 		if (log.isDebugEnabled())
 		{
@@ -251,6 +254,7 @@ public class AccountController
 			)
 	}
 	)
+	@RateLimiter(name = "getContactInfoRateLimiter", fallbackMethod = "getContactInfoFallback")
 	@Retry(name = "getContactInfo", fallbackMethod = "getContactInfoFallback")
 	@GetMapping("/contact-info")
 	public ResponseEntity<AccountsContactDetailsDto> getContactInfo()
@@ -264,17 +268,21 @@ public class AccountController
 				.body(accountsContactDetailsDto);
 	}
 
-	public ResponseEntity<AccountsContactDetailsDto> getContactInfoFallback()
+	public ResponseEntity<AccountsContactDetailsDto> getContactInfoFallback(final Throwable throwable	)
 	{
 		if (log.isDebugEnabled())
 		{
 			log.debug("getContactInfoFallback() method invoked");
 		}
 
+		return ResponseEntity.status(HttpStatus.OK).body(getContactInfoFallBack());
+	}
+
+	private AccountsContactDetailsDto getContactInfoFallBack() {
 		final AccountsContactDetailsDto asd = new AccountsContactDetailsDto();
 		asd.setMessage(AccountConstants.WELCOME_TO_BANKING_ACCOUNTS_DEFAULT_MESSAGE);
 		asd.setOnCallSupport(AccountConstants.ON_CALL_SUPPORT_DEFAULT_PHONE_NUMBERS);
 		asd.setContactDetails(AccountConstants.DEFAULT_CONTACT_DETAILS_DATA);
-		return ResponseEntity.status(HttpStatus.OK).body(asd);
+		return asd;
 	}
 }

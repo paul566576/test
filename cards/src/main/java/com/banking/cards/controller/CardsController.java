@@ -6,6 +6,7 @@ import com.banking.cards.dto.CardsContactInfoDto;
 import com.banking.cards.dto.ErrorResponseDto;
 import com.banking.cards.dto.ResponseDto;
 import com.banking.cards.service.CardsService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -203,6 +204,7 @@ public class CardsController
 			)
 	}
 	)
+	@RateLimiter(name = "getBuildInfoRateLimiter", fallbackMethod = "getBuildInfoFallback")
 	@Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
 	@GetMapping("/build-info")
 	public ResponseEntity<String> getBuildInformation()
@@ -243,6 +245,7 @@ public class CardsController
 			)
 	}
 	)
+	@RateLimiter(name = "getJavaVersionRateLimiter", fallbackMethod = "getJavaVersionFallback")
 	@Retry(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
 	@GetMapping("/java-version")
 	public ResponseEntity<String> getJavaVersion()
@@ -250,7 +253,7 @@ public class CardsController
 		return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty(CardsConstants.JAVA_HOME));
 	}
 
-	public ResponseEntity<String> getJavaVersionFallback()
+	public ResponseEntity<String> getJavaVersionFallback(final Throwable throwable)
 	{
 		if (log.isDebugEnabled())
 		{
@@ -278,6 +281,7 @@ public class CardsController
 			)
 	}
 	)
+	@RateLimiter(name = "getContactInfoRateLimiter", fallbackMethod = "getContactInfoFallback")
 	@Retry(name = "getContactInfo", fallbackMethod = "getContactInfoFallback")
 	@GetMapping("/contact-info")
 	public ResponseEntity<CardsContactInfoDto> getContactInfo()
@@ -291,7 +295,7 @@ public class CardsController
 				.body(cardsContactInfoDto);
 	}
 
-	public ResponseEntity<CardsContactInfoDto> getContactInfoFallback()
+	public ResponseEntity<CardsContactInfoDto> getContactInfoFallback(final Throwable throwable)
 	{
 		if (log.isDebugEnabled())
 		{

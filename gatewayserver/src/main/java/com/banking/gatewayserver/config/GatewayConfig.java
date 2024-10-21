@@ -6,11 +6,14 @@ import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
+import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -44,7 +47,9 @@ public class GatewayConfig
 						.uri("lb://CARDS"))
 				.route(p -> p.path("/banking/loans/**")
 						.filters(f -> f.rewritePath("/banking/loans/(?<segment>.*)", "/${segment}")
-										.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+								.requestRateLimiter(
+										conf -> conf.setRateLimiter(redisRateLimiter()).setKeyResolver(userKeyResolver()))
 								.circuitBreaker(config -> config.setName("loansCircuitBreaker")
 										.setFallbackUri("forward:/api/contactSupport"))
 								.retry(retryConfig -> retryConfig.setRetries(3)
@@ -60,6 +65,21 @@ public class GatewayConfig
 		return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
 				.circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
 				.timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(4)).build()).build());
+	}
+
+	@Bean
+	KeyResolver userKeyResolver()
+	{
+		return exchange -> Mono.justOrEmpty(exchange.getRequest()
+						.getHeaders()
+						.getFirst("user"))
+				.defaultIfEmpty("anonymous");
+	}
+
+	@Bean
+	public RedisRateLimiter redisRateLimiter()
+	{
+		return new RedisRateLimiter(1, 1, 1);
 	}
 
 }
