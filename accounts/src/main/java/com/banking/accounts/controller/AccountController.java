@@ -6,6 +6,7 @@ import com.banking.accounts.dto.CustomerDto;
 import com.banking.accounts.dto.ErrorResponseDto;
 import com.banking.accounts.dto.ResponseDto;
 import com.banking.accounts.service.AccountService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -25,10 +27,12 @@ import org.springframework.web.bind.annotation.*;
 
 
 
+
 @RestController
 @RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 @Tag(
 		name = "CRUD REST API for Accounts banking",
 		description = "CRUD REST API in banking  to CREATE, UPDATE, FETCH and DELETE account detail"
@@ -172,10 +176,26 @@ public class AccountController
 			)
 	}
 	)
+	@Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
 	@GetMapping("/build-info")
 	public ResponseEntity<String> getBuildInformation()
 	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getBuildInfo() method invoked");
+		}
+		//		Just example for checking ignore exception functionality
+		//		throw new NullPointerException();
 		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+	}
+
+	public ResponseEntity<String> getBuildInfoFallback(final Throwable throwable)
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getBuildInfoFallback() method invoked");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(AccountConstants.DEFAULT_BUILD_VERSION);
 	}
 
 	@Operation(
@@ -196,10 +216,21 @@ public class AccountController
 			)
 	}
 	)
+	@Retry(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
 	@GetMapping("/java-version")
 	public ResponseEntity<String> getJavaVersion()
 	{
-		return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("JAVA_HOME"));
+		return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty(AccountConstants.JAVA_HOME));
+	}
+
+	public ResponseEntity<String> getJavaVersionFallback()
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getJavaVersionFallback() method invoked");
+		}
+		// By default should be used java 21
+		return ResponseEntity.status(HttpStatus.OK).body(AccountConstants.DEFAULT_JAVA_VERSION);
 	}
 
 	@Operation(
@@ -220,11 +251,30 @@ public class AccountController
 			)
 	}
 	)
+	@Retry(name = "getContactInfo", fallbackMethod = "getContactInfoFallback")
 	@GetMapping("/contact-info")
 	public ResponseEntity<AccountsContactDetailsDto> getContactInfo()
 	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("Invoked Accounts contact-info API");
+		}
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(accountsContactDetailsDto);
+	}
+
+	public ResponseEntity<AccountsContactDetailsDto> getContactInfoFallback()
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getContactInfoFallback() method invoked");
+		}
+
+		final AccountsContactDetailsDto asd = new AccountsContactDetailsDto();
+		asd.setMessage(AccountConstants.WELCOME_TO_BANKING_ACCOUNTS_DEFAULT_MESSAGE);
+		asd.setOnCallSupport(AccountConstants.ON_CALL_SUPPORT_DEFAULT_PHONE_NUMBERS);
+		asd.setContactDetails(AccountConstants.DEFAULT_CONTACT_DETAILS_DATA);
+		return ResponseEntity.status(HttpStatus.OK).body(asd);
 	}
 }

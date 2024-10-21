@@ -7,11 +7,14 @@ import com.banking.accounts.dto.LoanDto;
 import com.banking.accounts.mapper.CustomerDetailsMapper;
 import com.banking.accounts.service.AccountService;
 import com.banking.accounts.service.CustomerService;
-import com.banking.accounts.service.client.CardFeignClient;
+import com.banking.accounts.service.client.CardsFeignClient;
 import com.banking.accounts.service.client.LoansFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 
 @Service
@@ -20,32 +23,33 @@ import org.springframework.stereotype.Service;
 public class CustomerServiceImpl implements CustomerService
 {
 	private final AccountService accountService;
-	private final CardFeignClient cardFeignClient;
+	private final CardsFeignClient cardsFeignClient;
 	private final LoansFeignClient loansFeignClient;
 
 	@Override
 	public CustomerDetailsDto fetchCustomerDetailsByMobileNumber(final String mobileNumber, final String correlationId)
 	{
 		final CustomerDto customerDto = accountService.getCustomerByMobileNumber(mobileNumber);
-		final CardDto cardDto = cardFeignClient.fetchCardByMobileNumber(correlationId, mobileNumber).getBody();
-
-		if (log.isDebugEnabled())
-		{
-			log.debug("Fetch card details by mobile number: {}", mobileNumber);
-		}
-
-		final LoanDto loanDto = loansFeignClient.fetchLoanByMobileNumber(correlationId, mobileNumber).getBody();
-
-		if (log.isDebugEnabled())
-		{
-			log.debug("Fetch loan details by mobile number: {}", mobileNumber);
-		}
-
+		final ResponseEntity<CardDto> cardDtoResponseEntity = cardsFeignClient.fetchCardByMobileNumber(correlationId, mobileNumber);
+		final ResponseEntity<LoanDto> loanDtoResponseEntity = loansFeignClient.fetchLoanByMobileNumber(correlationId, mobileNumber);
 		final CustomerDetailsDto customerDetailsDto = CustomerDetailsMapper.mapToCustomerDetailsDto(customerDto,
 				new CustomerDetailsDto());
-		customerDetailsDto.setCardDto(cardDto);
-		customerDetailsDto.setLoanDto(loanDto);
-
+		if (Objects.nonNull(cardDtoResponseEntity))
+		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("Fetch card details by mobile number: {}", mobileNumber);
+			}
+			customerDetailsDto.setCardDto(cardDtoResponseEntity.getBody());
+		}
+		if (Objects.nonNull(loanDtoResponseEntity))
+		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("Fetch loan details by mobile number: {}", mobileNumber);
+			}
+			customerDetailsDto.setLoanDto(loanDtoResponseEntity.getBody());
+		}
 		return customerDetailsDto;
 	}
 }
