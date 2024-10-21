@@ -6,6 +6,7 @@ import com.banking.loans.dto.LoanDto;
 import com.banking.loans.dto.LoansContactInfoDto;
 import com.banking.loans.dto.ResponseDto;
 import com.banking.loans.service.LoansService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -205,12 +206,26 @@ public class LoansController
 			)
 	}
 	)
+	@Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
 	@GetMapping("/build-info")
-	public ResponseEntity<String> getBuildInfo()
+	public ResponseEntity<String> getBuildInformation()
 	{
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(buildVersion);
+		if (log.isDebugEnabled())
+		{
+			log.debug("getBuildInfo() method invoked");
+		}
+//				Just example for checking ignore exception functionality
+//				throw new NullPointerException();
+		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+	}
+
+	public ResponseEntity<String> getBuildInfoFallback(final Throwable throwable)
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getBuildInfoFallback() method invoked");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(LoansConstants.DEFAULT_BUILD_VERSION);
 	}
 
 	@Operation(
@@ -231,12 +246,21 @@ public class LoansController
 			)
 	}
 	)
+	@Retry(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
 	@GetMapping("/java-version")
 	public ResponseEntity<String> getJavaVersion()
 	{
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(environment.getProperty("JAVA_HOME"));
+		return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty(LoansConstants.JAVA_HOME));
+	}
+
+	public ResponseEntity<String> getJavaVersionFallback()
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getJavaVersionFallback() method invoked");
+		}
+		// By default should be used java 21
+		return ResponseEntity.status(HttpStatus.OK).body(LoansConstants.DEFAULT_JAVA_VERSION);
 	}
 
 	@Operation(
@@ -257,11 +281,30 @@ public class LoansController
 			)
 	}
 	)
+	@Retry(name = "getContactInfo", fallbackMethod = "getContactInfoFallback")
 	@GetMapping("/contact-info")
 	public ResponseEntity<LoansContactInfoDto> getContactInfo()
 	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("Invoked Accounts contact-info API");
+		}
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(loansContactInfoDto);
+	}
+
+	public ResponseEntity<LoansContactInfoDto> getContactInfoFallback()
+	{
+		if (log.isDebugEnabled())
+		{
+			log.debug("getContactInfoFallback() method invoked");
+		}
+
+		final LoansContactInfoDto asd = new LoansContactInfoDto();
+		asd.setMessage(LoansConstants.WELCOME_TO_BANKING_ACCOUNTS_DEFAULT_MESSAGE);
+		asd.setOnCallSupport(LoansConstants.ON_CALL_SUPPORT_DEFAULT_PHONE_NUMBERS);
+		asd.setContactDetails(LoansConstants.DEFAULT_CONTACT_DETAILS_DATA);
+		return ResponseEntity.status(HttpStatus.OK).body(asd);
 	}
 }
