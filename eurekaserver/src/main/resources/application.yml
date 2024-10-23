@@ -20,4 +20,7 @@ management:
     health:
       probes:
         enabled: true
+  metrics:
+    tags:
+      applications: ${spring.application.name}
 
