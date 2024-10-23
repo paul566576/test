@@ -25,8 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/api")
@@ -94,10 +92,16 @@ public class LoansController
 	{
 		if (log.isDebugEnabled())
 		{
-			log.debug("Banking correlation id found: {}", correlationId);
+			log.debug("fetchLoanByLoanNumber start");
 		}
 
 		final LoanDto loan = loansService.fetchLoansByLoanNumber(loanNumber);
+
+		if (log.isDebugEnabled())
+		{
+			log.debug("fetchLoanByLoanNumber end");
+		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(loan);
 	}
 
@@ -216,8 +220,8 @@ public class LoansController
 		{
 			log.debug("getBuildInfo() method invoked");
 		}
-//				Just example for checking ignore exception functionality
-//				throw new NullPointerException();
+		//				Just example for checking ignore exception functionality
+		//				throw new NullPointerException();
 		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
 	}
 

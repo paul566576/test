@@ -117,9 +117,16 @@ public class CardsController
 	{
 		if (log.isDebugEnabled())
 		{
-			log.debug("Banking correlation id found: {}", correlationId);
+			log.debug("fetchCardByMobileNumber start");
 		}
+
 		final CardDto card = cardsService.fetchCardsByMobileNumber(mobileNumber);
+
+		if (log.isDebugEnabled())
+		{
+			log.debug("fetchCardByMobileNumber end");
+		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(card);
 	}
 

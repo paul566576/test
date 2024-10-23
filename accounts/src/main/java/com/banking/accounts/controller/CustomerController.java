@@ -56,10 +56,14 @@ public class CustomerController
 	{
 		if (log.isDebugEnabled())
 		{
-			log.debug("Banking correlation id found: {}", correlationId);
+			log.debug("fetchCustomerDetails in ACCOUNTS MS start");
 		}
-		final CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetailsByMobileNumber(mobileNumber, correlationId);
-
+		final CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetailsByMobileNumber(mobileNumber,
+				correlationId);
+		if (log.isDebugEnabled())
+		{
+			log.debug("fetchCustomerDetails in ACCOUNTS MS end");
+		}
 		return ResponseEntity.status(HttpStatus.OK).body(customerDetailsDto);
 
 	}
