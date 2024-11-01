@@ -75,7 +75,7 @@
 				<version>3.4.2</version>
 				<configuration>
 					<to>
-						<image>pavelboldienkov/${project.artifactId}:1.7</image>
+						<image>pavelboldienkov/${project.artifactId}:1.8</image>
 					</to>
 				</configuration>
 			</plugin>
