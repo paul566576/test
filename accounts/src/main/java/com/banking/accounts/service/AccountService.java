@@ -36,4 +36,11 @@ public interface AccountService
 	 * @return boolean indicating if the deleting of Account details ıs successful or not
 	 */
 	boolean deleteAccount(final String mobileNumber);
+
+	/**
+	 *
+	 * @param accountNumber Long
+	 * @return boolean indicating if the communication status was updated or not
+	 */
+	boolean updateCommunicationStatus(final Long accountNumber);
 }
