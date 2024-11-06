@@ -1,4 +1,25 @@
 services:
+  kafka:
+    image: docker.io/bitnami/kafka:3.8.1
+    ports:
+      - "9092:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.2
     container_name: keycloak
@@ -286,7 +307,7 @@ services:
       service: network-deploy-service
 
   configserver:
-    image: pavelboldienkov/configserver:1.9
+    image: pavelboldienkov/configserver:1.10
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -306,7 +327,7 @@ services:
       OTEL_SERVICE_NAME: "configserver"
 
   eurekaserver:
-    image: pavelboldienkov/eurekaserver:1.9
+    image: pavelboldienkov/eurekaserver:1.10
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
@@ -327,7 +348,7 @@ services:
       service: microservice-configserver-config
 
   accounts:
-    image: pavelboldienkov/accounts:1.9
+    image: pavelboldienkov/accounts:1.10
     container_name: accounts-ms
     depends_on:
       configserver:
@@ -336,13 +357,11 @@ services:
         condition: service_healthy
       eurekaserver:
         condition: service_healthy
-      rabbit:
-        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "accounts"
       SPRING_DATASOURCE_URL: jdbc:mysql://accountsdb:3306/accountsdb
       OTEL_SERVICE_NAME: "accounts"
-      SPRING_RABBITMQ_HOST: "rabbit"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
@@ -354,7 +373,7 @@ services:
       service: microservice-eureka-config
 
   loans:
-    image: pavelboldienkov/loans:1.9
+    image: pavelboldienkov/loans:1.10
     container_name: loans-ms
     depends_on:
       configserver:
@@ -378,7 +397,7 @@ services:
       service: microservice-eureka-config
 
   cards:
-    image: pavelboldienkov/cards:1.9
+    image: pavelboldienkov/cards:1.10
     container_name: cards-ms
     depends_on:
       configserver:
@@ -402,7 +421,7 @@ services:
       service: microservice-eureka-config
 
   gatewayserver:
-    image: pavelboldienkov/gatewayserver:1.9
+    image: pavelboldienkov/gatewayserver:1.10
     container_name: gatewayserver-ms
     ports:
       - "8072:8072"
@@ -428,15 +447,16 @@ services:
       service: microservice-eureka-config
 
   message:
-    image: pavelboldienkov/message:1.9
-    depends_on:
-      rabbit:
-        condition: service_healthy
+    image: pavelboldienkov/message:1.10
     environment:
-      SPRING_RABBITMQ_HOST: "rabbit"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
       service: network-deploy-service
+
+volumes:
+  kafka_data:
+    driver: local
 
 networks:
   banking:

@@ -122,7 +122,7 @@
                 <version>3.4.2</version>
                 <configuration>
                     <to>
-                        <image>pavelboldienkov/${project.artifactId}:1.9</image>
+                        <image>pavelboldienkov/${project.artifactId}:1.10</image>
                     </to>
                 </configuration>
             </plugin>
