@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-mysql
+  labels:
+    app: accounts-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accounts-mysql
+  template:
+    metadata:
+      labels:
+        app: accounts-mysql
+    spec:
+      containers:
+        - name: accounts-mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: accountsdb
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts-mysql
+spec:
+  selector:
+    app: accounts-mysql
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306

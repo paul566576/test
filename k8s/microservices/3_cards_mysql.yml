@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cards-mysql
+  labels:
+    app: cards-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cards-mysql
+  template:
+    metadata:
+      labels:
+        app: cards-mysql
+    spec:
+      containers:
+        - name: cards-mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: cardsdb
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cards-mysql
+spec:
+  selector:
+    app: cards-mysql
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 3307
+      targetPort: 3306
+

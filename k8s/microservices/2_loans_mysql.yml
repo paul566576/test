@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loans-mysql
+  labels:
+    app: loans-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loans-mysql
+  template:
+    metadata:
+      labels:
+        app: loans-mysql
+    spec:
+      containers:
+        - name: loans-mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: loansdb
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loans-mysql
+spec:
+  selector:
+    app: loans-mysql
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 3308
+      targetPort: 3306
+
