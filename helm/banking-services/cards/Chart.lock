@@ -1,0 +1,9 @@
+dependencies:
+- name: banking-common
+  repository: file://../../banking-common
+  version: 0.1.0
+- name: cards-mysql
+  repository: file://../../banking-databases/cards-mysql
+  version: 12.0.1
+digest: sha256:332aee3c9366b5d25706d03c479b652a93a8a2b42b716489f7bc1bca32deff15
+generated: "2024-11-27T14:29:26.314792+01:00"

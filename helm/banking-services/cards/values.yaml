@@ -1,0 +1,36 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploymentName: cards-deployment
+serviceName: cards
+appLabel: cards
+appName: cards
+
+replicaCount: 1
+
+image:
+  repository: pavelboldienkov/cards
+  tag: "1.10"
+
+cards:
+  databaseURL: "jdbc:mysql://banking-cards-mysql:3307/cardsdb"
+  cardsUser: cardsuser
+  cardsDBPassword: Test1234!
+
+containerPort: 9000
+
+service:
+  type: ClusterIP
+  port: 9000
+  targetPort: 9000
+
+appname_enabled: true
+profile_enabled: true
+config_enabled: true
+eureka_enabled: true
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: false
+accountsmysql_enabled: false
+cardsmysql_enabled: true
+loansmysql_enabled: false

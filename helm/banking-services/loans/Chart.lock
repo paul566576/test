@@ -1,0 +1,9 @@
+dependencies:
+- name: banking-common
+  repository: file://../../banking-common
+  version: 0.1.0
+- name: loans-mysql
+  repository: file://../../banking-databases/loans-mysql
+  version: 12.0.1
+digest: sha256:d78b06cb68c56a2a06a4f603c74b2191876e76bb58e34604811adab485b69820
+generated: "2024-11-27T14:29:33.825998+01:00"

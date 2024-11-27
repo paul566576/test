@@ -1,0 +1,36 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploymentName: loans-deployment
+serviceName: loans
+appLabel: loans
+appName: loans
+
+replicaCount: 1
+
+image:
+  repository: pavelboldienkov/loans
+  tag: "1.10"
+
+loans:
+  databaseURL: "jdbc:mysql://banking-loans-mysql:3308/loansdb"
+  loansUser: loansuser
+  loansDBPassword: Test1234!
+
+containerPort: 8090
+
+service:
+  type: ClusterIP
+  port: 8090
+  targetPort: 8090
+
+appname_enabled: true
+profile_enabled: true
+config_enabled: true
+eureka_enabled: true
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: false
+accountsmysql_enabled: false
+cardsmysql_enabled: false
+loansmysql_enabled: true

@@ -1,0 +1,9 @@
+dependencies:
+- name: banking-common
+  repository: file://../../banking-common
+  version: 0.1.0
+- name: accounts-mysql
+  repository: file://../../banking-databases/accounts-mysql
+  version: 12.0.1
+digest: sha256:4a7721610200657cc7bd603eefccf08cdfdb4cf68e8df90ce11db6d0f6841711
+generated: "2024-11-27T14:29:17.112904+01:00"
