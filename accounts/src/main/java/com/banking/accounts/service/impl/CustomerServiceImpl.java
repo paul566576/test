@@ -11,6 +11,7 @@ import com.banking.accounts.service.client.CardsFeignClient;
 import com.banking.accounts.service.client.LoansFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,11 @@ import java.util.Objects;
 public class CustomerServiceImpl implements CustomerService
 {
 	private final AccountService accountService;
-	private final CardsFeignClient cardsFeignClient;
+	@Qualifier("loansFeignClient") // Explicitly specify the Feign client proxy
 	private final LoansFeignClient loansFeignClient;
+	@Qualifier("cardsFeignClient") // Explicitly specify the Feign client proxy
+	private final CardsFeignClient cardsFeignClient;
+
 
 	@Override
 	public CustomerDetailsDto fetchCustomerDetailsByMobileNumber(final String mobileNumber, final String correlationId)

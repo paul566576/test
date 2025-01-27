@@ -22,6 +22,10 @@ spring:
     port: 5672
     username: "guest"
     password: "guest"
+  cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true
 
 resilience4j:
   circuitbreaker:
@@ -75,15 +79,6 @@ management:
 endpoints:
   shutdown:
     enabled: true
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetchRegistry: true
-    registerWithEureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8070/eureka/
 
 info:
   app:

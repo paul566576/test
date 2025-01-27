@@ -11,8 +11,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class FallbackController
 {
-	@RequestMapping("/contactSupport")
-	public Mono<String> contactSupport()
+	@RequestMapping("/contactSupport")	public Mono<String> contactSupport()
 	{
 		return Mono.just(GatewayConstants.CONTACT_SUPPORT_ERROR_MESSAGE);
 	}

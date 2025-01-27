@@ -20,7 +20,7 @@
         <lombok.version>1.18.34</lombok.version>
         <micrometer.version>1.13.3</micrometer.version>
         <jib.version>3.4.2</jib.version>
-        <image.tag>1.10</image.tag>
+        <image.tag>1.12</image.tag>
         <security.version>6.3.3</security.version>
     </properties>
     <dependencies>

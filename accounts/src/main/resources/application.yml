@@ -24,6 +24,9 @@ spring:
     password: "guest"
     connection-timeout: 10s
   cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true
     openfeign:
       circuitbreaker:
         enabled: true
@@ -94,15 +97,6 @@ management:
 endpoints:
   shutdown:
     enabled: true
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetchRegistry: true
-    registerWithEureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8070/eureka/
 
 info:
   app:

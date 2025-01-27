@@ -9,11 +9,13 @@ import io.swagger.v3.oas.annotations.info.License;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
+@EnableDiscoveryClient
 @EnableConfigurationProperties(CardsContactInfoDto.class)
 @OpenAPIDefinition(info = @Info(title = "Cards microservice REST API Documentation",
 		description = "Banking Cards microservice REST API Documentation",

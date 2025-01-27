@@ -35,7 +35,7 @@ public class GatewayConfig
 										.setMethods(HttpMethod.GET)
 										.setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true))
 						)
-						.uri("lb://ACCOUNTS"))
+						.uri("http://accounts:8080"))
 				.route(p -> p.path("/banking/cards/**")
 						.filters(f -> f.rewritePath("/banking/cards/(?<segment>.*)", "/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
@@ -44,7 +44,7 @@ public class GatewayConfig
 								.retry(retryConfig -> retryConfig.setRetries(3)
 										.setMethods(HttpMethod.GET)
 										.setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true)))
-						.uri("lb://CARDS"))
+						.uri("http://cards:9000"))
 				.route(p -> p.path("/banking/loans/**")
 						.filters(f -> f.rewritePath("/banking/loans/(?<segment>.*)", "/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
@@ -56,7 +56,7 @@ public class GatewayConfig
 										.setMethods(HttpMethod.GET)
 										.setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true))
 						)
-						.uri("lb://LOANS")).build();
+						.uri("http://loans:8090")).build();
 	}
 
 	@Bean
